@@ -271,11 +271,12 @@ namespace VRC.PackageManagement.Automation
                     ).ToList(),
                 });
 
-                var model = new ScriptObject() {
+                var model = new Scriban.Runtime.ScriptObject()
+                {
                     ["listingInfo"] = listingInfo,
                     ["packages"] = formattedPackages
                 };
-                var context = new TemplateContext()
+                var context = new Scriban.TemplateContext()
                 {
                     MemberRenamer = member => member.Name
                 };
