@@ -57,7 +57,9 @@ else
 fi
 
 FRAMEWORK="net6.0"
-if dotnet --list-sdks | grep ^8 > /dev/null; then
+if dotnet --list-sdks | grep '^10\.' > /dev/null; then
+  FRAMEWORK="net10.0"
+elif dotnet --list-sdks | grep '^8\.' > /dev/null; then
   FRAMEWORK="net8.0"
 fi
 
