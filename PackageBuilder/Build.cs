@@ -270,16 +270,21 @@ namespace VRC.PackageManagement.Automation
                         }
                     ).ToList(),
                 });
-                
-                var rendered = Scriban.Template.Parse(indexTemplateContent).Render(
-                    new { listingInfo, packages = formattedPackages }, member => member.Name
-                );
-                
+
+                var model = new Scriban.Runtime.ScriptObject()
+                {
+                    ["listingInfo"] = listingInfo,
+                    ["packages"] = formattedPackages
+                };
+                var context = new Scriban.TemplateContext()
+                {
+                    MemberRenamer = member => member.Name
+                };
+                context.PushGlobal(model);
+                var rendered = Scriban.Template.ParseLiquid(indexTemplateContent).Render(context);
                 File.WriteAllText(indexWritePath, rendered);
 
-                var appJsRendered = Scriban.Template.Parse(File.ReadAllText(appReadPath)).Render(
-                    new { listingInfo, packages = formattedPackages }, member => member.Name
-                );
+                var appJsRendered = Scriban.Template.ParseLiquid(File.ReadAllText(appReadPath)).Render(context);
                 File.WriteAllText(indexAppWritePath, appJsRendered);
 
                 if (!IsServerBuild) {
